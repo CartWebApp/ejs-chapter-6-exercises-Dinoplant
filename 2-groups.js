@@ -43,6 +43,21 @@ class Group {
   }
 }
 
+class GroupIterator {
+    constructor(group) {
+      this.x = 0;
+      this.group = group.group;
+    }
+    
+    next() {
+      if (this.x === this.group.length) return {done: true};
+      
+      let value = this.group[this.x];
+      this.x++
+      
+      return {value, done: false}
+    }
+  }
 
 // Tests:
 let group = Group.from([10, 20]);

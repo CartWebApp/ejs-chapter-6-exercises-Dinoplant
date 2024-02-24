@@ -10,42 +10,75 @@ It is okay if your iterator behaves strangely when the group is modified during 
 
 
 class Group {
-
-  constructor() {
-      this.group = [];
-  }
-
-  add(value) {
+    constructor() {
+      this.members = [];
+    }
+  
+    add(value) {
       if (!this.has(value)) {
-          this.group.push(value);
+        this.members.push(value);
       }
-  }
+    }
+  
+    delete(value) {
+      this.members = this.members.filter(v => v !== value);
+    //   if (this.has(value)) {
+    //     const removeDelete = this.group.indexOf(value);
+    //     delete this.group[removeDelete];
+    // }
+    }
+  
+    has(value) {
+      return this.members.includes(value);
 
-  delete(value) {
-      if (this.has(value)) {
-          const removeDelete = this.group.indexOf(value);
-          delete this.group[removeDelete];
-      }
-  }
-
-  has(value) {
-      for (let member of this.group) {
-          if (member === value) {
-              return true;
-          }
-      }
-      return false;        
-  }
-
-  static from(iterable) {
-      let group = new Group();
-      for (let element of iterable) {
-          group.add(element);
+    //     if (member === value) {
+    //         return true;
+    //     }
+    // }
+    }
+  
+    static from(iterable) {
+        let group = new Group();
+        for (let element of iterable) {
+            group.add(element);
+        }
+        return group;
+    }
+    static from(thing) {
+      let group = new Group;
+      for (let value of thing) {
+        group.add(value);
       }
       return group;
+    }
+  
+    [Symbol.iterator]() {
+      return new GroupIterator(this);
+    }
   }
-}
-
+  
+  class GroupIterator {
+    constructor(group) {
+      this.group = group;
+      this.position = 0;
+    }
+  
+    next() {
+      if (this.position >= this.group.members.length) {
+        return {done: true};
+      } else {
+        let result = {value: this.group.members[this.position],
+                      done: false};
+        this.position++;
+        return result;
+      }
+    }
+  }
+  
+  for (let value of Group.from(["a", "b", "c"])) {
+    console.log(value);
+  }
+  
 
 // Tests:
 for (let value of Group.from(["a", "b", "c"])) {
